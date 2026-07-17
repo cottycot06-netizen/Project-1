@@ -250,28 +250,29 @@ func _build_ui() -> void:
 
 	var enemy_sprite := ColorRect.new()
 	enemy_sprite.color = COL_ENEMY
-	enemy_sprite.position = Vector2(284, 42)
-	enemy_sprite.size = Vector2(72, 72)
+	enemy_sprite.position = Vector2(288, 32)
+	enemy_sprite.size = Vector2(64, 64)
 	add_child(enemy_sprite)
 
-	enemy_hp_bar = _make_bar(COL_ENEMY, Vector2(220, 122), Vector2(200, 12))
+	enemy_hp_bar = _make_bar(COL_ENEMY, Vector2(220, 102), Vector2(200, 10))
 	add_child(enemy_hp_bar)
-	enemy_hp_label = _make_label("HP", Vector2(220, 136), Vector2(200, 16), 12, HORIZONTAL_ALIGNMENT_CENTER)
+	# Label sits BELOW the bar (the bar's real height is a bit taller than 10px).
+	enemy_hp_label = _make_label("HP", Vector2(220, 138), Vector2(200, 16), 12, HORIZONTAL_ALIGNMENT_CENTER)
 	add_child(enemy_hp_label)
 
 	# --- Message log (middle) ---
 	var log_bg := ColorRect.new()
 	log_bg.color = Color(0, 0, 0, 0.35)
-	log_bg.position = Vector2(36, 158)
-	log_bg.size = Vector2(568, 60)
+	log_bg.position = Vector2(36, 160)
+	log_bg.size = Vector2(568, 58)
 	add_child(log_bg)
 
 	log_label = RichTextLabel.new()
 	log_label.bbcode_enabled = true
 	log_label.fit_content = true
 	log_label.scroll_active = false
-	log_label.position = Vector2(44, 160)
-	log_label.size = Vector2(552, 56)
+	log_label.position = Vector2(44, 162)
+	log_label.size = Vector2(552, 54)
 	log_label.add_theme_font_size_override("normal_font_size", 13)
 	log_label.add_theme_font_size_override("bold_font_size", 13)
 	add_child(log_label)
@@ -301,7 +302,7 @@ func _build_ui() -> void:
 	add_child(menu)
 
 	attack_btn = _make_menu_button("Attack")
-	skill_btn = _make_menu_button("Frenzied Strike (5 SAN)")
+	skill_btn = _make_menu_button("Frenzied (5 SAN)")
 	item_btn = _make_menu_button("Bandage")
 	flee_btn = _make_menu_button("Flee")
 	menu.add_child(attack_btn)
@@ -356,4 +357,6 @@ func _make_menu_button(text: String) -> Button:
 	btn.text = text
 	btn.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	btn.custom_minimum_size = Vector2(0, 40)
+	btn.add_theme_font_size_override("font_size", 15)
+	btn.clip_text = true  # never let a long label spill past the button edge
 	return btn
