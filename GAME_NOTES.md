@@ -11,7 +11,7 @@
 - **อารมณ์ที่ต้องการ:** ความกลัวจากสิ่งที่ไม่รู้จัก, ความสิ้นหวัง, การเสียสติทีละน้อย
 - **แก่นของเกม (Core loop):** เปิดกล่องไม้ (สุ่มไอเทม) → สำรวจ → เจอเหตุการณ์/ศัตรู → เอาตัวรอด/สู้ด้วยของที่มี → เสีย/ได้ Sanity → คืบหน้า → ตาย/จบรอบ → เริ่มใหม่ (ของสุ่มใหม่)
 - **มุมมอง:** แบ่ง 2 ช่วงชัดเจน (ดูหมวด 1.7) — สำรวจ = 16-bit top-down / ต่อสู้ = มุมเผชิญหน้า
-- **แพลตฟอร์ม / เอนจิน:** _(ยังไม่ตัดสินใจ — เว็บ (JS/TS) / Godot / Unity / Python?)_
+- **เอนจิน:** **Godot 4** — ภาษา **GDScript** (ตัดสินใจแล้ว, เหตุผลดูหมวด 4.1)
 - **ภาษาในเกม (ข้อความ/UI):** **อังกฤษ (English)**
 
 ### ⭐ เสาหลักของดีไซน์ (Design Pillars) — สำคัญที่สุด
@@ -167,30 +167,45 @@
 
 ---
 
-## 4. โครงสร้างโค้ด (คร่าวๆ ไว้คิดทีหลัง)
+### 4.1 ⭐ เอนจิน & ภาษา (ตัดสินใจแล้ว)
+**เลือก: Godot 4 + GDScript**
+
+เหตุผล:
+- **เกิดมาเพื่อ 2D pixel** — มี TileMap editor ในตัว เหมาะกับ 16-bit top-down (Pokémon-style)
+- **ระบบ Scene เข้ากับเกม 2 โหมด** — โหมดสำรวจ / โหมดต่อสู้ แยกเป็นคนละ scene แล้วสลับได้ลื่น
+- **GDScript เรียนง่าย** (คล้าย Python) เหมาะกับโปรเจกต์เดี่ยว ลองผิดลองถูกเร็ว
+- **ฟรี + เบา + เปิดเร็ว** โอเพนซอร์ส
+- **ส่งออกได้หลายแพลตฟอร์ม** (Windows/Mac/Linux/Web)
+
+ตัดทิ้ง: Unity (หนักเกิน), Web/Phaser (ต้องประกอบ tooling เอง), Pygame (ไม่มี editor)
+
+### 4.2 โครงสร้างโปรเจกต์ (คร่าวๆ — ปรับตอนลงมือจริง)
 
 ```
-/game
-  /core        → game loop, turn manager, state machine
-  /entities    → player, enemy, base character class
-  /systems     → combat, sanity, inventory, exploration
-  /data        → enemies, items, skills (config/JSON)
-  /ui          → เมนู, healthbar, dialogue box
-  /assets      → รูป, เสียง
+/game (Godot project)
+  /scenes      → Main, Exploration, Combat, Menu (แต่ละ .tscn)
+  /scripts
+    /core      → game manager, turn manager, state machine
+    /entities  → player, enemy, base character
+    /systems   → combat, sanity, inventory, loot
+  /data        → enemies, items, skills (Godot Resource / .tres หรือ JSON)
+  /ui          → เมนูคำสั่ง, HP/Sanity bar, dialogue box
+  /assets      → sprite, tileset, เสียง
 ```
 
 - แนวคิด: แยก **data (ตัวเลข/config)** ออกจาก **logic (ระบบ)** ให้ปรับสมดุลเกมง่าย
 - ใช้ state machine จัดการสถานะเกม: `EXPLORE / COMBAT / DIALOGUE / MENU / GAMEOVER`
+- Godot: ใช้ **Resource (.tres)** เก็บ stat ศัตรู/ไอเทม จะแก้ค่าใน editor ได้สะดวก
 
 ---
 
 ## 5. คำถามที่ต้องตัดสินใจ (Open Questions)
 
-- [ ] ใช้เอนจิน/ภาษาอะไร?
-- [ ] 2D หรือ text-based?
-- [ ] เล่นคนเดียวตัวเดียว หรือคุมทีม (party)?
-- [ ] เกมสั้นจบในตัว หรือ roguelike เล่นซ้ำ?
-- [ ] สไตล์ภาพเป็นแบบไหน?
+- [x] ~~ใช้เอนจิน/ภาษาอะไร?~~ → **Godot 4 + GDScript**
+- [x] ~~2D หรือ text-based?~~ → **2D pixel (16-bit)**
+- [x] ~~สไตล์ภาพเป็นแบบไหน?~~ → **สำรวจ top-down / ต่อสู้ face-off** (หมวด 1.7)
+- [x] ~~เกมสั้นจบในตัว หรือ roguelike เล่นซ้ำ?~~ → **Roguelike (permadeath)**
+- [ ] เล่นคนเดียวตัวเดียว หรือคุมทีม (party)? _(ยังไม่ตัดสินใจ)_
 
 ---
 
